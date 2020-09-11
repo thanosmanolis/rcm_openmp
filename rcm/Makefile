@@ -12,7 +12,7 @@
 CC = gcc-7
 
 # define flags
-CFLAGS =
+CFLAGS = -Wall
 
 # define command to remove files
 RM = rm -rf

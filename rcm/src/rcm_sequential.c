@@ -14,6 +14,18 @@ int *rcm(int *X, int n)
 	int *degrees = malloc(n * sizeof(int));		// Array containing degree of all nodes
 	int *inserted = malloc(n * sizeof(int));	// Shows if the node is already inserted to R (0 or 1)
 
+	//! Check for malloc failures
+	if( degrees == NULL )
+    {
+        printf(RED "Error:" RESET_COLOR " Memory allocation for 'degrees' failed\n\n");
+		exit(1);
+    }
+	if( inserted == NULL )
+    {
+        printf(RED "Error:" RESET_COLOR " Memory allocation for 'inserted' failed\n\n");
+		exit(1);
+    }
+
 	//! Initialize inserted array with zeros
 	for(int i=0; i<n; i++)
 		inserted[i] = 0;
@@ -26,13 +38,13 @@ int *rcm(int *X, int n)
 	//! elements of each corresponding row)
 	for(int i=0; i<n; i++)
 	{	
-		degrees[i] = 0;
+		int degree = 0;
+
         for(int j=0; j<n; j++)
-			if( X[n*i + j] )
-				degrees[i]++;
+			if( X[n*i + j] && (j != i) )
+				degree++;
 		
-		if( degrees[i] != 0)
-			degrees[i] = degrees[i] - X[n*i + i];
+		degrees[i] = degree;
 	}
 
 	//! Do the algorithm until R is full
@@ -105,14 +117,16 @@ void add_neighbors_to_queue(int *X, int n, int *degrees,
 	//! Find all of its neighbors and store them to an array
 	int num_of_neigh = degrees[element_idx];	// number of neighbors
 	int *neighbors = malloc(num_of_neigh * sizeof(int));
-	int count = 0;
+	if( neighbors == NULL )
+    {
+        printf(RED "Error:" RESET_COLOR " Memory allocation for 'neighbors' failed\n\n");
+		exit(1);
+    }
 
+	int count = 0;
 	for(int j=0; j<n; j++)
 	{
-		if(j == element_idx)
-			continue;
-
-		if(X[n*element_idx + j] == 1)
+		if( (X[n*element_idx + j] == 1) && (j != element_idx) )
 		{
 			neighbors[count++] = j;
 			if(count == num_of_neigh)
@@ -180,7 +194,7 @@ void enqueue(Queue *Q, int element)
       	Q->size++;
       	Q->rear = Q->rear + 1;
       	if(Q->rear == Q->capacity)
-         	Q->rear = 0;
+		  Q->rear = 0;
 
 		//! Insert the element in its rear side
 		Q->elements[Q->rear] = element;	

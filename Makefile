@@ -16,7 +16,7 @@ CC = gcc-7
 EXECS = sequential
 
 # define flags
-CFLAGS = -Wall -O3
+CFLAGS = -Wall
 LDFLAGS =
 
 # define command to remove files
