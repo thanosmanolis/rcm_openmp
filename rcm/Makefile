@@ -18,7 +18,7 @@ CFLAGS = -Wall
 RM = rm -rf
 
 # all the libraries
-LIBS = lib_seq
+LIBS = lib_seq lib_openmp
 
 # always build those, even if "up-to-date"
 .PHONY: $(LIBS)
@@ -29,6 +29,11 @@ lib_seq:
 	cd src; $(CC) -c rcm_sequential.c $(CFLAGS); cd ..
 	cd src; $(CC) -c helper.c $(CFLAGS); cd ..
 	cd src; ar rcs ../lib/lib_seq.a helper.o rcm_sequential.o; cd ..
+
+lib_openmp:
+	cd src; $(CC) -c rcm_openmp.c $(CFLAGS) -fopenmp; cd ..
+	cd src; $(CC) -c helper.c $(CFLAGS); cd ..
+	cd src; ar rcs ../lib/lib_openmp.a helper.o rcm_openmp.o; cd ..
 
 clean:
 	$(RM) src/*.o lib/*.a

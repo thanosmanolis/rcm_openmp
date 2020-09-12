@@ -19,6 +19,9 @@
 #define YELLOW "\033[0;33m"
 #define RESET_COLOR "\033[0m"
 
+//! Define number of threads
+#define NUM_THREADS 4
+
 /*
 ********************************************************
 *    @file   rcm.h                                     *
@@ -82,20 +85,26 @@ int   isFull(Queue *Q);
 *    --- Add neighbors to queue ---                                         *
 *                                                                           *
 *    This function implements a step of RCM algorithm, where we             *
-*    insert the neighbors (not already insertedto R) of an                  *
-*    element to Q, sorted in increasing order of degree                     *
+*    insert the neighbors (not already inserted to R) of an                 *
+*    element to Q, sorted in increasing order of degree.                    *
 *                                                                           *
 *    - param X             1D array                                         *
 *    - param n             Size of Matrix                                   * 
 *    - param degrees       Array containing degree of all nodes             *
 *    - param inserted      Shows if the node is already inserted to R       *    
 *    - param Q             Queue array          [n-by-n]                    *
-*    - param element_idx   Element of which neighbors are to be inserted    *                    * 
+*    - param element_idx   Element of which neighbors are to be inserted    *
+*                                                                           *
+*    The parallel version of it, also has this argument                     *
+*                                                                           *
+*    - param last_neigbor_idx   Index of the element's last neighbor        *
 *****************************************************************************
 */
-
 void add_neighbors_to_queue(int *X, int n, int *degrees, 
                             int *inserted, Queue *Q, int element_idx);
+
+void add_neighbors_to_queue_parallel(int *X, int n, int *degrees, int *inserted,
+                              Queue *Q, int element_idx, int last_neighbor_idx);
 
 /*
 **************************************************************************
