@@ -11,12 +11,12 @@
 
 int *rcm(int *X, int n)
 {
-	Queue *Q = createQueue(n*n);	// Queue array
+	Queue *Q = createQueue(n);		// Queue array
 	Queue *R = createQueue(n);		// Result array
 
 	int *degrees = malloc(n * sizeof(int));			// Array containing degree of all nodes
 	int *last_neighbors = malloc(n * sizeof(int)); 	// Array containining the index of the last neighbors
-	int *inserted = malloc(n * sizeof(int));		// Shows if the node is already inserted to R (0 or 1)
+	int *inserted = malloc(n * sizeof(int));		// Shows if the node is already inserted to R or Q (0 or 1)
 
 	//! Check for malloc failures
 	if( degrees == NULL )
@@ -105,32 +105,29 @@ int *rcm(int *X, int n)
 		//! Insert index of minimum degree object to R	
 		enqueue(R, min_degree_idx);
 		inserted[min_degree_idx] = 1;
-
-		//! Insert all of its neighbors (not already inserted to R)
-		//! to Q, sorted in increasing order of degree
-		add_neighbors_to_queue_parallel(X, n, degrees, inserted, Q,
-					min_degree_idx, last_neighbors[min_degree_idx]);
-		
-		//! While Q is not empty, extract its first node. If this
-		//! node has not been inserted in R, add it to R and add
-		//! its neighbors in increasing order of degree to Q
-		while(!isEmpty(Q))
+		if(degrees[min_degree_idx])
 		{
-			//! Remove the first element of Q
-			int removed_item = peek(Q);
-			dequeue(Q);
+			//! Insert all of its neighbors (not already inserted to R)
+			//! to Q, sorted in increasing order of degree
+			add_neighbors_to_queue_parallel(X, n, degrees, inserted, Q, min_degree_idx, 
+											last_neighbors[min_degree_idx]);
 			
-			//! Check if it has been already inserted to R
-			if(!inserted[removed_item])
+			//! While Q is not empty, extract its first node. If this
+			//! node has not been inserted in R, add it to R and add
+			//! its neighbors in increasing order of degree to Q
+			while(!isEmpty(Q))
 			{
+				//! Remove the first element of Q
+				int removed_item = peek(Q);
+				dequeue(Q);
+				
 				//! Insert index of this element to R
 				enqueue(R, removed_item);
-				inserted[removed_item] = 1;
-				
-				//! Insert all of its neighbors (not already inserted to R)
-				//! to Q, sorted in increasing order of degree
-				add_neighbors_to_queue_parallel(X, n, degrees, inserted, Q,  
-								removed_item, last_neighbors[removed_item]);
+
+				//! If it has neighbors, add all of them (not already inserted
+				//! to R or Q) to Q, sorted in increasing order of degree
+				if(degrees[removed_item])
+					add_neighbors_to_queue(X, n, degrees, inserted, Q, removed_item);
 			}
 		}
 	}
@@ -185,10 +182,13 @@ void add_neighbors_to_queue_parallel(int *X, int n, int *degrees, int *inserted,
 	//! Sort the neighbors in increasing order of degree using quickSort
 	quickSort(neighbors, degrees, 0, num_of_neigh - 1);
 	
-	//! Insert all of its neighbors (not already inserted to R) to Q
+	//! Insert all of its neighbors (not already inserted to R or Q) to Q
 	for(int i=0; i<num_of_neigh; i++)
 		if(!inserted[neighbors[i]])
+		{
 			enqueue(Q, neighbors[i]);
+			inserted[neighbors[i]] = 1;
+		}
 
 	free(neighbors);
 }
