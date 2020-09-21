@@ -12,32 +12,32 @@
 ******************************
 */
 
-node *createNode(int v) 
+node *createNode(int v)
 {
-	node* newNode = malloc(sizeof(node));
+	node *newNode = malloc(sizeof(node));
 	newNode->vertex = v;
 	newNode->next = NULL;
 
 	return newNode;
 }
 
-Graph *createGraph(int vertices) 
+Graph *createGraph(int vertices)
 {
-	Graph* graph = malloc(sizeof(Graph));
+	Graph *graph = malloc(sizeof(Graph));
 	graph->numVertices = vertices;
 
-	graph->adjLists = malloc(vertices * sizeof(node*));
+	graph->adjLists = malloc(vertices * sizeof(node *));
 
-	for(int i=0; i<vertices; i++)
+	for (int i = 0; i < vertices; i++)
 		graph->adjLists[i] = NULL;
 
 	return graph;
 }
 
-void addEdge(Graph* graph, int s, int d) 
+void addEdge(Graph *graph, int s, int d)
 {
 	//! Add edge from s to d
-	node* newNode = createNode(d);
+	node *newNode = createNode(d);
 	newNode->next = graph->adjLists[s];
 	graph->adjLists[s] = newNode;
 
@@ -47,18 +47,18 @@ void addEdge(Graph* graph, int s, int d)
 	graph->adjLists[d] = newNode;
 }
 
-void printGraph(Graph* graph) 
+void printGraph(Graph *graph)
 {
-	for(int v=0; v < graph->numVertices; v++) 
+	for (int v = 0; v < graph->numVertices; v++)
 	{
-		node* temp = graph->adjLists[v];
+		node *temp = graph->adjLists[v];
 		printf("\n Vertex %d\n: ", v);
 
-		while (temp) 
+		while (temp)
 		{
 			printf("%d", temp->vertex);
 			temp = temp->next;
-			if(temp)
+			if (temp)
 				printf(" -> ");
 		}
 		printf("\n");
@@ -74,61 +74,61 @@ void printGraph(Graph* graph)
 
 void print_array(int *X, int n)
 {
-	for(int i=0; i<n; i++)
+	for (int i = 0; i < n; i++)
 		printf("%d ", X[i]);
-    printf("\n\n");
+	printf("\n\n");
 }
 
 void print_array_2d(int *X, int n)
 {
-	for(int i=0; i<n; i++)
-    {
-        for(int j=0; j<n; j++)
-            if(X[n*i + j])
-				printf(GREEN "%d " RESET_COLOR, X[n*i + j]);
-			else	
-				printf(RED "%d " RESET_COLOR, X[n*i + j]);
-        printf("\n");
-    }
-    printf("\n");
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+			if (X[n * i + j])
+				printf(GREEN "%d " RESET_COLOR, X[n * i + j]);
+			else
+				printf(RED "%d " RESET_COLOR, X[n * i + j]);
+		printf("\n");
+	}
+	printf("\n");
 }
 
 int calc_bandwidth(int *X, int n)
 {
-    int band_hi = 0;
+	int band_hi = 0;
 	int band_lo = 0;
 	int temp;
 
-    for(int i=0; i<n; i++)
-    {        		
+	for (int i = 0; i < n; i++)
+	{
 		temp = 0;
-        for(int j=n-1; j>i; j--)
-            if(X[n*i + j] != 0)
-            {
-                temp = j - i;
-                break;
-            }
-            else
-                continue;
-        
-        if(temp > band_hi)
-            band_hi = temp; 
+		for (int j = n - 1; j > i; j--)
+			if (X[n * i + j] != 0)
+			{
+				temp = j - i;
+				break;
+			}
+			else
+				continue;
+
+		if (temp > band_hi)
+			band_hi = temp;
 
 		temp = 0;
-        for(int j=0; j<i; j++)
-            if(X[n*i + j] != 0)
-            {
-                temp = i - j;
-                break;
-            }
-            else
-                continue;
+		for (int j = 0; j < i; j++)
+			if (X[n * i + j] != 0)
+			{
+				temp = i - j;
+				break;
+			}
+			else
+				continue;
 
-        if(temp > band_lo)
-            band_lo = temp; 
-    }
+		if (temp > band_lo)
+			band_lo = temp;
+	}
 
-    int bandwidth = band_lo + band_hi + 1;
+	int bandwidth = band_lo + band_hi + 1;
 
-    return bandwidth;
+	return bandwidth;
 }

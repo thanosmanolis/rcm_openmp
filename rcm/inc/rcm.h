@@ -66,19 +66,19 @@ int *rcm(int *X, int n);
 
 typedef struct Queue
 {
-   int capacity;
-   int size;
-   int front;
-   int rear;
-   int *elements;
-}Queue;
+	int capacity;
+	int size;
+	int front;
+	int rear;
+	int *elements;
+} Queue;
 
 Queue *createQueue(int max_elements);
-void  enqueue(Queue *Q, int element);
-void  dequeue(Queue *Q);
-int   peek(Queue *Q);
-int   isEmpty(Queue *Q);
-int   isFull(Queue *Q);
+void enqueue(Queue *Q, int element);
+void dequeue(Queue *Q);
+int peek(Queue *Q);
+int isEmpty(Queue *Q);
+int isFull(Queue *Q);
 
 /*
 *****************************************************************************
@@ -100,11 +100,11 @@ int   isFull(Queue *Q);
 *    - param last_neigbor_idx   Index of the element's last neighbor        *
 *****************************************************************************
 */
-void add_neighbors_to_queue(int *X, int n, int *degrees, 
-                            int *inserted, Queue *Q, int element_idx);
+void add_neighbors_to_queue(int *X, int n, int *degrees,
+							int *inserted, Queue *Q, int element_idx);
 
 void add_neighbors_to_queue_parallel(int *X, int n, int *degrees, int *inserted,
-                              Queue *Q, int element_idx, int last_neighbor_idx);
+									 Queue *Q, int element_idx, int last_neighbor_idx);
 
 /*
 **************************************************************************
@@ -119,9 +119,9 @@ void add_neighbors_to_queue_parallel(int *X, int n, int *degrees, int *inserted,
 **************************************************************************
 */
 
-int   partition(int arr1[], int arr2[], int low, int high);
-void  quickSort(int arr1[], int arr2[], int low, int high);
-void  swap(int* a, int* b); 
+int partition(int arr1[], int arr2[], int low, int high);
+void quickSort(int arr1[], int arr2[], int low, int high);
+void swap(int *a, int *b);
 
 /*
 **********************************************************************
@@ -135,22 +135,22 @@ void  swap(int* a, int* b);
 **********************************************************************
 */
 
-typedef struct node 
+typedef struct node
 {
-   int vertex;
-   struct node* next;
-}node;
+	int vertex;
+	struct node *next;
+} node;
 
-typedef struct Graph 
+typedef struct Graph
 {
-   int numVertices;
-   node** adjLists;
-}Graph;
+	int numVertices;
+	node **adjLists;
+} Graph;
 
-Graph* createGraph(int vertices);
-node* createNode(int v);
-void addEdge(Graph* graph, int s, int d);
-void printGraph(Graph* graph);
+Graph *createGraph(int vertices);
+node *createNode(int v);
+void addEdge(Graph *graph, int s, int d);
+void printGraph(Graph *graph);
 
 /*
 ************************************************************************
@@ -167,9 +167,9 @@ void printGraph(Graph* graph);
 ************************************************************************
 */
 
-void  reverse_array(int *X, int n);
-void  print_array(int *X, int n);
-void  print_array_2d(int *X, int n);
-int   calc_bandwidth(int *X, int n);
+void reverse_array(int *X, int n);
+void print_array(int *X, int n);
+void print_array_2d(int *X, int n);
+int calc_bandwidth(int *X, int n);
 
 #endif
