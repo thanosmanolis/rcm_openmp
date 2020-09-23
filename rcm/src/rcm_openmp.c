@@ -127,7 +127,8 @@ int *rcm(int *X, int n)
 				//! If it has neighbors, add all of them (not already inserted
 				//! to R or Q) to Q, sorted in increasing order of degree
 				if (degrees[removed_item])
-					add_neighbors_to_queue(X, n, degrees, inserted, Q, removed_item);
+					add_neighbors_to_queue_parallel(X, n, degrees, inserted, Q, removed_item,
+											last_neighbors[removed_item]);
 			}
 		}
 	}
