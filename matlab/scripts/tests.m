@@ -3,9 +3,9 @@
 %    for various input matrices, and then stores the time elapsed    %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-for i = 1:20
+for i = 1:35
     % Read the input matrix
-    filename = ['../matrices/inputs/input_' num2str(i*1000) '.csv'];
+    filename = ['../../matrices/input_' num2str(i*1000) '.csv'];
     input = csvread(filename);
     
     n = size(input,1);

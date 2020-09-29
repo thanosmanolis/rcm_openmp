@@ -8,18 +8,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 size = 3;
-n = 1000;
+arg = 'seq'; % This must be the same as the third argument when running the program
 
 %% Read the input matrix
 figure;
-filename = ['../matrices/inputs/input_' num2str(n) '.csv'];
+filename = ['../../matrices/input_' num2str(arg)];
 input = csvread(filename);
 spy(input, size);
 title('Input matrix');
 
 %% Implementation in C
 figure;
-filename = ['../matrices/seq/output_' num2str(n) '.csv'];
+filename = ['../../matrices/output_' num2str(arg)];
 output_c = csvread(filename);
 spy(output_c, size);
 title('Reverse Cuthill-McKee (C)');
