@@ -25,7 +25,7 @@
 /*
 ********************************************************
 *    @file   rcm.h                                     *
-*    @author Thanos Manolis <thanos.m14@gmail.coms>    *
+*    @author Thanos Manolis <thanos.m14@gmail.com>     *
 *    @date   Wed Aug 26 15:11:30 2020                  *
 *    @brief  Main utility functions                    *
 ********************************************************
