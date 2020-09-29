@@ -9,6 +9,10 @@
 #include <omp.h>
 #include "../inc/rcm.h"
 
+#define THRES_1 2000 // Threshold for parallelization of degrees array creation
+#define THRES_2 1000 // Threshold for parallelization of neighbors' searching
+#define THRES_3 100	 // Threshold for parallelization of neighbors' sorting
+
 int *rcm(int *X, int n)
 {
 	Queue *Q = createQueue(n); // Queue array
@@ -48,7 +52,7 @@ int *rcm(int *X, int n)
 	//! store the index of its last neighbor for later
 	//! Do it parallel only if n > 2000
 	int i_;
-	if (n > 2000)
+	if (n > THRES_1)
 #pragma omp parallel private(i_) num_threads(NUM_THREADS)
 	{
 #pragma omp for schedule(dynamic)
@@ -128,7 +132,7 @@ int *rcm(int *X, int n)
 				//! to R or Q) to Q, sorted in increasing order of degree
 				if (degrees[removed_item])
 					add_neighbors_to_queue_parallel(X, n, degrees, inserted, Q, removed_item,
-											last_neighbors[removed_item]);
+													last_neighbors[removed_item]);
 			}
 		}
 	}
@@ -166,7 +170,7 @@ void add_neighbors_to_queue_parallel(int *X, int n, int *degrees, int *inserted,
 
 	int count = 0;
 	int j_;
-	if (n > 1000)
+	if (n > THRES_2)
 #pragma omp parallel private(j_) num_threads(NUM_THREADS)
 	{
 #pragma omp for
@@ -181,7 +185,20 @@ void add_neighbors_to_queue_parallel(int *X, int n, int *degrees, int *inserted,
 				neighbors[count++] = j_;
 
 	//! Sort the neighbors in increasing order of degree using quickSort
-	quickSort(neighbors, degrees, 0, num_of_neigh - 1);
+	//! If the neighbors are more than 100, then do it in parallel, using 2 threads
+	if (num_of_neigh > THRES_3)
+	{
+		int pi = partition(neighbors, degrees, 0, num_of_neigh - 1);
+#pragma omp parallel sections
+		{
+#pragma omp section
+			quickSort(neighbors, degrees, 0, pi - 1); // Thread 1
+#pragma omp section
+			quickSort(neighbors, degrees, pi + 1, num_of_neigh - 1); // Thread 2
+		}
+	}
+	else
+		quickSort(neighbors, degrees, 0, num_of_neigh - 1);
 
 	//! Insert all of its neighbors (not already inserted to R or Q) to Q
 	for (int i = 0; i < num_of_neigh; i++)
