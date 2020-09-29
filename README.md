@@ -5,11 +5,11 @@
 Reverse Cuthill-McKee is an algorithm for generating a permutation for sparse matrices. This repo includes a sequential implementation of it, along with a parallel one using OpenMP.
 
 ## Observations
-The only parts worth parallelizing are two, which are actually responsible for almost 70% of the total execution time. Despite them only being two, one can clearly see that OpenMP gave a great speedup indeed (35-40% faster). Although, Matlab implementation is even faster than the parallel one.
+The only parts worth parallelizing are three, which are actually responsible for almost 80% of the total execution time. Despite them only being three, one can clearly see that OpenMP gave a great speedup indeed (up to 2.3 times faster) which is the same execution time as Matlab's official implementation.
 
 ### Execution times
 
-All executions were done using Intel i7-7500U CPU, 8GB RAM, 4GB Swap Memory, with a 1% matrix density. Three implementations are being compared (sequential, parallel, matlab official).
+All executions were done using Intel i7-7500U CPU, 8GB RAM, 4GB Swap Memory, with a 0.1% matrix density. Three implementations are being compared (sequential, parallel, matlab official).
 
 | Comparison between all implementations    | Speedup achieved using OpenMP         |
 |:-----------------------------------------:|:-------------------------------------:|
