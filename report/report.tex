@@ -3,7 +3,7 @@
 \usepackage{amsmath}  	% improve math presentation
 \usepackage{graphicx} 	% takes care of graphic including machinery
 \usepackage{algorithm,algorithmic} 				% describe algorithms
-\usepackage[margin=1in,letterpaper]{geometry} 	% decreases margins
+\usepackage[margin=0.9in,letterpaper]{geometry} 	% decreases margins
 \usepackage{cite} 		% takes care of citations
 \usepackage{listings} 	% Code writing
 \usepackage{pythonhighlight}
@@ -56,7 +56,7 @@ The bandwidth of a matrix is computed as the maximum bandwidth of each row of th
 \subsection{Sequential implementation}
 \vspace{2mm} %2mm vertical space
 
-Create a queue array \textbf{Q} and a result array \textbf{R}. Those two are implemented with the function of a queue (LIFO), so that an element can be enqueued or dequeued at any time. Also create a \textbf{degrees} array to store the degree of each node and a \textbf{inserted} array to show for each node if it is inserted or not to \textbf{R} or \textbf{Q}. In order for this to work, each time an element is enqueued, change its corresponding value in \textbf{inserted} array to 1. In addition, store the degree of each node (sum of non-diagonal elements at each corresponding row).
+Create a queue array \textbf{Q} and a result array \textbf{R}. Those two are implemented with the function of a queue (FIFO), so that an element can be enqueued or dequeued at any time. Also create a \textbf{degrees} array to store the degree of each node and a \textbf{inserted} array to show for each node if it is inserted or not to \textbf{R} or \textbf{Q}. In order for this to work, each time an element is enqueued, change its corresponding value in \textbf{inserted} array to 1. In addition, store the degree of each node (sum of non-diagonal elements at each corresponding row).
 \newline\newline
 \textit{Until all nodes are explored (\textbf{R} is full), do the following}: 
 \begin{itemize}
@@ -68,31 +68,33 @@ When \textbf{R} is full, reverse \textbf{R} (final step of RCM algorithm), free 
 \subsection{Parallel implementation}
 \vspace{2mm} %2mm vertical space
 
-After trial \& error it was decided that there are two parts worth computing in parallel:
+After trial \& error it was decided that there are three parts worth computing in parallel:
 \begin{itemize}
 	\item Calculation of the degree of each node
 	\item Searching of the neighbors of the node most recently inserted to \textbf{R} (through the function \textbf{add\_neighbors\_to\_queue()})
+	\item Sorting of the neighbors (through the function \textbf{quicksort()})
 \end{itemize}
 
-\leavevmode\newline
-For the first parallel part, the parallelization is achieved through a classic \textit{for loop} OpenMP implementation.
+%\leavevmode\newline
+For the \textit{first} parallel part, the parallelization is achieved through a classic \textit{for loop} OpenMP implementation. For the \textit{third} parallel part, the \textit{sections} construct is used. In essence, the first two partitions created by quickSort, are computed in parallel.
 
-\leavevmode\newline
-For the second parallel part, some extra steps had to be done. Along with the same inputs as before, function \textbf{add\_neighbors\_to\_queue()} had one extra input, which is the index of the last neighbor of the examined element, calculated previously in the program. This was needed to be done because the loop about to become parallel, was a \textit{while loop} with a \textit{break;} command inside, which is not supported by OpenMP. Therefore those extra features allow us to convert it to a \textit{for loop} and easily parallelize it with OpenMP. Apart from those extras, a \textbf{\#pragma omp critical} command was added for each iteration, since the same variable is accessed by many threads at the same time.
+%\leavevmode\newline
+For the \textit{second} parallel part, some extra steps had to be done. Along with the same inputs as before, function \textbf{add\_neighbors\_to\_queue()} had one extra input, which is the index of the last neighbor of the examined element, calculated previously in the program. This was needed to be done because the loop about to become parallel, was a \textit{while loop} with a \textit{break;} command inside, which is not supported by OpenMP. Therefore those extra features allow us to convert it to a \textit{for loop} and easily parallelize it with OpenMP. Apart from those extras, a \textbf{\#pragma omp critical} command was added for each iteration, since the same variable is accessed by many threads at the same time.
+
 
 \section{Execution times}
 
-All executions were done using Intel i7-7500U CPU, 8GB RAM, 4GB Swap Memory, with a 1\% matrix density.
+All executions were done using Intel i7-7500U CPU, 8GB RAM, 4GB Swap Memory, with a 0.1\% matrix density.
 
 \begin{figure}[!htb]
 	\centering
-	\begin{minipage}[b]{0.45\textwidth}
+	\begin{minipage}[b]{0.42\textwidth}
 		\includegraphics[width=\textwidth]{images/rcm.png}
 		\caption{Comparison of different implementations}
 		\label{fig:rcm}
 	\end{minipage}
 	\hfill
-	\begin{minipage}[b]{0.45\textwidth}
+	\begin{minipage}[b]{0.42\textwidth}
 		\includegraphics[width=\textwidth]{images/speedup.png}
 		\caption{Speedup achieved using OpenMP}
 		\label{fig:speedup}
@@ -131,7 +133,7 @@ From the images below, one can observe that this RCM implementation is an accura
 \subsection{Comments}
 \vspace{2mm} %2mm vertical space
 
-After observations over the speedup for various parallelizations, it was concluded that the only parts worth parallelizing are two, which are actually responsible for almost 70\% of the total execution time. Despite them only being two, one can clearly see that OpenMP gave a great speedup indeed (35-40\% faster). Although, Matlab implementation is even faster than the parallel one. Also parallel computing is used only at \textbf{n} values higher than the thresholds for both cases (1000 and 2000 accordingly), because for small matrices, sequential implementation is faster than the parallel one.
+After observations over the speedup for various parallelizations, it was concluded that the only parts worth parallelizing are three, which are actually responsible for almost 80\% of the total execution time. Despite them only being three, one can clearly see that OpenMP gave a great speedup indeed (up to 2.3 times faster) which is the same execution time as Matlab's official implementation. For the first two cases, parallel computing is used only for \textbf{n} values higher than the thresholds (1000 and 2000 accordingly),  because for small matrices, sequential implementation is faster than the parallel one. As for the third case, it will be computed in parallel for a number of neighbors higher than 100.
 
 %++++++++++++++++++++++++++++++++++++++++
 % References section will be created automatically 
