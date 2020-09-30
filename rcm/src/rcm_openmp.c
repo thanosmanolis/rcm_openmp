@@ -9,6 +9,10 @@
 #include <omp.h>
 #include "../inc/rcm.h"
 
+//! Define number of threads
+#define NUM_THREADS omp_get_max_threads() // Set threads as the number of cores (4 in my case)
+
+//! Define thresholds for parallelism
 #define THRES_1 2000 // Threshold for parallelization of degrees array creation
 #define THRES_2 1000 // Threshold for parallelization of neighbors' searching
 #define THRES_3 100	 // Threshold for parallelization of neighbors' sorting

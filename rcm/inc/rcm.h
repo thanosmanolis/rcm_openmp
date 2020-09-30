@@ -19,9 +19,6 @@
 #define YELLOW "\033[0;33m"
 #define RESET_COLOR "\033[0m"
 
-//! Define number of threads
-#define NUM_THREADS 4
-
 /*
 ********************************************************
 *    @file   rcm.h                                     *
